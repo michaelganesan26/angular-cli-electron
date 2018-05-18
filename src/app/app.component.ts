@@ -11,7 +11,7 @@ import { ElectronService } from 'ngx-electron'
 export class AppComponent implements AfterViewInit, OnChanges {
   title = 'app';
   @ViewChild("fileTextArea") elTextArea: ElementRef;
-  data: string = "Wow this si cool";
+  data: string = "Simple Message";
   constructor(private render: Renderer2,
     private _electronService: ElectronService, private ref:ChangeDetectorRef) {
      //this.ref.detectChanges();
