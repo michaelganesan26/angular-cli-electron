@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -16,7 +16,7 @@ const createWindow = () => {
       height: 600,
       icon: './src/favicon.ico',
       webPreferences: {
-        nodeIntegration: false // turn it on to use node features
+        nodeIntegration: true // turn it on to use node features
       }
     });
 
@@ -37,7 +37,9 @@ const createWindow = () => {
       win = null;
     });
   }, 10000);
-}
+
+
+};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -61,5 +63,18 @@ app.on('activate', () => {
   }
 });
 
+app.on("before-quit",()=>{
+  console.log('Quit called on app!');
+  ipcMain.removeAllListeners("message");
+
+});
+
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on("message",(event,message)=>{
+
+   console.log("Received a message from client ",message);
+   event.sender.send("message","Message from main process!");
+});

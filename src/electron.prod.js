@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -12,6 +12,9 @@ const createWindow = () => {
         width: 800,
         height: 600,
         icon: path.join(__dirname, 'favicon.ico'),
+        webPreferences:{
+            nodeIntegration:true
+        }
     });
 
     // and load the index.html of the app.
