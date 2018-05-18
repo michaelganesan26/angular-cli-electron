@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -63,7 +63,7 @@ app.on('activate', () => {
   }
 });
 
-app.on("before-quit",()=>{
+app.on("before-quit", () => {
   console.log('Quit called on app!');
   ipcMain.removeAllListeners("message");
 
@@ -73,8 +73,30 @@ app.on("before-quit",()=>{
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on("message",(event,message)=>{
+ipcMain.on("message", (event, message) => {
 
-   console.log("Received a message from client ",message);
-   event.sender.send("message","Message from main process!");
+  console.log("Received a message from client ", message);
+  event.sender.send("message", "Message from main process!");
 });
+
+
+ipcMain.on("openFileDialog",(event)=>{
+
+   console.log("Open file dialog");
+   let path = "~/Downloads";
+   
+
+   dialog.showOpenDialog(win,{
+     properties: ['openDirectory'],
+     defaultPath: path
+   },(files)=>{
+       console.log(`Your files: ${files}`);
+       event.sender.send("openFileDialog",files);
+   });
+
+
+
+
+});
+
+

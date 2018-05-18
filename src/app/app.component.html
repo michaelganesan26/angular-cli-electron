@@ -26,5 +26,12 @@
 <section>
   <h3>Send Ping Message</h3>
   <button (click)="sendPingMessage($event)">Send Ping Message</button>
+</section>
+<section>
+  <h3>Open a file dialog</h3>
+  <button (click)="openFileDialog($event)">Open File dialog</button>
+  <br>
+  <textarea #fileTextArea cols="30" rows="10" [(ngModel)]="data">{{data}}</textarea>
+  <p>{{data}}</p>
 
 </section>
