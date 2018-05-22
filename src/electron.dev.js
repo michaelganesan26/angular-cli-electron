@@ -1,10 +1,11 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, MenuItem } = require('electron');
 const path = require('path');
 const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
+let contextMenu;
 
 const createWindow = () => {
   // set timeout to render the window not until the Angular
@@ -27,7 +28,7 @@ const createWindow = () => {
       slashes: true
     }));
 
-    win.webContents.openDevTools();
+    //win.webContents.openDevTools();
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -38,6 +39,9 @@ const createWindow = () => {
     });
   }, 10000);
 
+
+  //add context menu
+  initContextMenu();
 
 };
 
@@ -79,24 +83,84 @@ ipcMain.on("message", (event, message) => {
   event.sender.send("message", "Message from main process!");
 });
 
+ipcMain.on("openFileDialog", (event) => {
 
-ipcMain.on("openFileDialog",(event)=>{
-
-   console.log("Open file dialog");
-   let path = "~/Downloads";
-   
-
-   dialog.showOpenDialog(win,{
-     properties: ['openDirectory'],
-     defaultPath: path
-   },(files)=>{
-       console.log(`Your files: ${files}`);
-       event.sender.send("openFileDialog",files);
-   });
+  let fileFilters = [
+    { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
+    { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] },
+    { name: 'Custom File Type', extensions: ['as'] },
+    { name: 'All Files', extensions: ['*'] }
+  ];
 
 
 
+  console.log("Open file dialog");
+  let myDefaultPath = path.join("/", "home", "ganesanm", "Downloads");
+  console.log(`Test:Your current path is : ${myDefaultPath}`);
+
+  //get the current window
+  let myWindow = BrowserWindow.fromWebContents(event.sender);
+
+  dialog.showOpenDialog(myWindow, {
+    filters: fileFilters,
+    title: "Open a file dialog",
+    buttonLabel: "Select a file...",
+    properties: ['openFile'],
+    defaultPath: myDefaultPath,
+  }, (files) => {
+    console.log(`Your files: ${files}`);
+    event.sender.send("openFileDialog", files);
+  });
 
 });
+
+
+ipcMain.on("openDirectoryDialog", (event) => {
+
+  console.log("Open directory dialog");
+  let myDefaultPath = path.join("/", "home", "ganesanm", "Downloads");
+  console.log(`Test:Your current path is : ${myDefaultPath}`);
+
+  //get the window
+  let mywindow = BrowserWindow.fromWebContents(event.sender);
+
+  dialog.showOpenDialog(myWindow, {
+    title: "Open a workspace",
+    buttonLabel: "Select ..",
+    properties: ['openDirectory'],
+    defaultPath: myDefaultPath,
+  }, (files) => {
+    console.log(`Your files: ${files}`);
+    event.sender.send("openDirectoryDialog", files);
+  });
+
+});
+
+const initContextMenu = ()=>{
+
+   contextMenu = new Menu();
+   contextMenu.append(new MenuItem({label:'Cut',role:'cut'}));
+   contextMenu.append(new MenuItem({label:'Copy',role:'copy'}));
+   contextMenu.append(new MenuItem({label:'Paste',role:'Paste'}));
+   contextMenu.append(new MenuItem({label:'Select All',role:'selectall'}));
+   contextMenu.append(new MenuItem({type:'separator'}));
+   contextMenu.append(new MenuItem({label:'Custom',click:()=>{
+     console.log('You just clicked a custom menu item from main');
+   }}));
+
+};
+
+
+ipcMain.on('show-context-menu',(event)=>{
+
+    let currentWindow = BrowserWindow.fromWebContents(event.sender);
+
+    contextMenu.popup(currentWindow);
+
+});
+
+
+
+
 
 
