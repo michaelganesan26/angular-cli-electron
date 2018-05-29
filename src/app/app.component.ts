@@ -12,6 +12,13 @@ export class AppComponent implements AfterViewInit, OnChanges {
   title = 'app';
   @ViewChild("fileTextArea") elTextArea: ElementRef;
   data: string = "Simple Message";
+
+   //files
+   files:string[] = [];
+
+
+
+
   constructor(private render: Renderer2,
     private _electronService: ElectronService, private ref: ChangeDetectorRef) {
     //this.ref.detectChanges();
@@ -25,6 +32,11 @@ export class AppComponent implements AfterViewInit, OnChanges {
       this.data = filePath;
       console.log(`Your current directory is: ${this.data}`);
       this.ref.detectChanges();
+
+      //Send and open the files for the directory
+      this._electronService.ipcRenderer.send("readFiles",this.data);
+
+
     });
 
     this._electronService.ipcRenderer.on("openFileDialog", (event: any, filePath: any) => {
@@ -34,6 +46,18 @@ export class AppComponent implements AfterViewInit, OnChanges {
       console.log(`Your current directory is: ${this.data}`);
       this.ref.detectChanges();
     });
+
+    this._electronService.ipcRenderer.on("selectedFiles",(event:any,files:string[])=>{
+
+       console.log(files);
+       this.files=files;
+       this.ref.detectChanges();
+
+
+    });
+
+
+
 
     //this.addContextMenuFromRenderer();
 

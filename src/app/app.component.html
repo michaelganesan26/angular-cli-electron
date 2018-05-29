@@ -36,3 +36,15 @@
   <textarea #fileTextArea cols="30" rows="10" [(ngModel)]="data"></textarea>
 
 </section>
+<section>
+  <h3>List of Files</h3>
+  <ul>
+      <li *ngFor="let file of files;let i=index">
+        {{file}}
+    </li>
+  </ul>
+
+
+
+
+</section>

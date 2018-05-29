@@ -2,6 +2,12 @@ const { app, BrowserWindow, ipcMain, dialog, Menu, MenuItem } = require('electro
 const path = require('path');
 const url = require('url');
 
+const { getFiles } = require("./lib/directoryAccess");
+
+
+
+
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
@@ -122,7 +128,7 @@ ipcMain.on("openDirectoryDialog", (event) => {
   console.log(`Test:Your current path is : ${myDefaultPath}`);
 
   //get the window
-  let mywindow = BrowserWindow.fromWebContents(event.sender);
+  let myWindow = BrowserWindow.fromWebContents(event.sender);
 
   dialog.showOpenDialog(myWindow, {
     title: "Open a workspace",
@@ -136,30 +142,49 @@ ipcMain.on("openDirectoryDialog", (event) => {
 
 });
 
-const initContextMenu = ()=>{
+const initContextMenu = () => {
 
-   contextMenu = new Menu();
-   contextMenu.append(new MenuItem({label:'Cut',role:'cut'}));
-   contextMenu.append(new MenuItem({label:'Copy',role:'copy'}));
-   contextMenu.append(new MenuItem({label:'Paste',role:'Paste'}));
-   contextMenu.append(new MenuItem({label:'Select All',role:'selectall'}));
-   contextMenu.append(new MenuItem({type:'separator'}));
-   contextMenu.append(new MenuItem({label:'Custom',click:()=>{
-     console.log('You just clicked a custom menu item from main');
-   }}));
+  contextMenu = new Menu();
+  contextMenu.append(new MenuItem({ label: 'Cut', role: 'cut' }));
+  contextMenu.append(new MenuItem({ label: 'Copy', role: 'copy' }));
+  contextMenu.append(new MenuItem({ label: 'Paste', role: 'Paste' }));
+  contextMenu.append(new MenuItem({ label: 'Select All', role: 'selectall' }));
+  contextMenu.append(new MenuItem({ type: 'separator' }));
+  contextMenu.append(new MenuItem({
+    label: 'Custom', click: () => {
+      console.log('You just clicked a custom menu item from main');
+    }
+  }));
 
 };
 
 
-ipcMain.on('show-context-menu',(event)=>{
+ipcMain.on('show-context-menu', (event) => {
 
-    let currentWindow = BrowserWindow.fromWebContents(event.sender);
+  let currentWindow = BrowserWindow.fromWebContents(event.sender);
 
-    contextMenu.popup(currentWindow);
+  contextMenu.popup(currentWindow);
 
 });
 
+ipcMain.on("readFiles", (event, dirPath) => {
+  
+   console.log(typeof(dirPath));
+   console.log(`Your current path to read files is: ${dirPath.toString()}`);
 
+   getFiles.readDirectory(dirPath.toString()).then((files)=>{
+       files.forEach(file=>{
+         console.log(file);
+       });
+   
+      event.sender.send("selectedFiles",files);
+
+
+   }).catch((error)=>{
+        console.log(`Error from Promise Code: ${error}`);
+   });
+
+})
 
 
 
