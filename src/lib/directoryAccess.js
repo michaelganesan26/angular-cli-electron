@@ -17,6 +17,9 @@ var getFiles = (function () {
                         if (err)
                             reject(err.message);
                         else {
+                            //  setTimeout(()=>{
+                            //   resolve(files);
+                            //  },3000);
                             resolve(files);
                         }
                     });

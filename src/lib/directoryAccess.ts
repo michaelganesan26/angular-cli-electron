@@ -26,7 +26,10 @@ export class getFiles{
                  if(err)
                    reject(err.message);
                  else{
-                    resolve(files);
+                    //  setTimeout(()=>{
+                    //   resolve(files);
+                    //  },3000);
+                     resolve(files);
                  }
                })
              }
