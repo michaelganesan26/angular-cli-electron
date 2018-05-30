@@ -1,11 +1,13 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu, MenuItem } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, MenuItem, nativeImage } = require('electron');
 const path = require('path');
 const url = require('url');
 
+const fs = require('fs');
+
+
 const { getFiles } = require("./lib/directoryAccess");
 
-
-
+const colors = require("colors");
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -185,6 +187,61 @@ ipcMain.on("readFiles", (event, dirPath) => {
    });
 
 })
+
+//Open Message Box
+ipcMain.on("OpenMessageDialog",(event,data)=>{
+
+
+   let myWindow = BrowserWindow.fromWebContents(event.sender);
+
+   let iconPath = path.join(__dirname,"assets","icons","documentIcon.png");
+
+   if(fs.existsSync(iconPath)){
+     console.log(`Icons Path: ${iconPath} does exists!`);
+   }
+   else{
+      console.log(`Sorry the icon path: ${iconPath} does not exist!`);
+   }
+
+   let documentIcon= nativeImage.createFromPath(iconPath);
+
+
+   dialog.showMessageBox(myWindow,{
+         type:"info",
+         icon: documentIcon,
+         title: "Sample Message Box",
+         defaultId: 0,
+         cancelId: 3,
+         checkboxLabel: "Michael Rocks",
+         message: "Welcome to my World of Data",
+         buttons:['Save','Cancel','Don\'t Save','Mexican']
+   },(response,checkboxChecked)=>{
+      
+     //find out what is the platform
+     console.log(`Your platform is: ${process.platform}`);
+
+   
+
+     if(checkboxChecked){
+         console.log(colors.magenta('You checked the checkbox for the dialog'));
+
+     }
+
+
+     if(response){
+      console.log(colors.magenta(`Your clicked: ${response}`));
+     }
+     else{
+        console.log(colors.yellow('You clicked the save box!'))
+     }
+
+   })
+
+});
+
+
+
+
 
 
 

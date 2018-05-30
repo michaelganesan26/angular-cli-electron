@@ -13,8 +13,8 @@ export class AppComponent implements AfterViewInit, OnChanges {
   @ViewChild("fileTextArea") elTextArea: ElementRef;
   data: string = "Simple Message";
 
-   //files
-   files:string[] = [];
+  //files
+  files: string[] = [];
 
 
 
@@ -34,7 +34,7 @@ export class AppComponent implements AfterViewInit, OnChanges {
       this.ref.detectChanges();
 
       //Send and open the files for the directory
-      this._electronService.ipcRenderer.send("readFiles",this.data);
+      this._electronService.ipcRenderer.send("readFiles", this.data);
 
 
     });
@@ -47,23 +47,21 @@ export class AppComponent implements AfterViewInit, OnChanges {
       this.ref.detectChanges();
     });
 
-    this._electronService.ipcRenderer.on("selectedFiles",(event:any,files:string[])=>{
+    this._electronService.ipcRenderer.on("selectedFiles", (event: any, files: string[]) => {
 
-       console.log(files);
-       this.files=files;
-       this.ref.detectChanges();
+      console.log(files);
+      this.files = files;
+      this.ref.detectChanges();
 
 
     });
 
 
-
-
     //this.addContextMenuFromRenderer();
 
-    window.addEventListener('contextmenu',(event)=>{
-        event.preventDefault();
-        this._electronService.ipcRenderer.send("show-context-menu");
+    window.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      this._electronService.ipcRenderer.send("show-context-menu");
 
     })
 
@@ -139,6 +137,14 @@ export class AppComponent implements AfterViewInit, OnChanges {
     this._electronService.ipcRenderer.send("openFileDialog");
 
   }
+
+  //Open Message Dialog
+  openMessageDialog(event:MouseEvent){
+       this._electronService.ipcRenderer.send("OpenMessageDialog",{icon:"info"});
+
+      }
+
+
 
 
 
