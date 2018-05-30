@@ -15,15 +15,20 @@ const colors = require("colors");
 let win;
 let contextMenu;
 
+
+
+
 const createWindow = () => {
   // set timeout to render the window not until the Angular
   // compiler is ready to show the project
   setTimeout(() => {
     // Create the browser window.
     win = new BrowserWindow({
+      title: "Michale's Electron App",
       width: 800,
       height: 600,
       icon: './src/favicon.ico',
+      //icon: './src/assets/icons/documentIcon.png',
       webPreferences: {
         nodeIntegration: true // turn it on to use node features
       }
@@ -203,7 +208,11 @@ ipcMain.on("OpenMessageDialog",(event,data)=>{
       console.log(`Sorry the icon path: ${iconPath} does not exist!`);
    }
 
-   let documentIcon= nativeImage.createFromPath(iconPath);
+   //let documentIcon= nativeImage.createFromPath(iconPath);
+   let nativeimage = require('electron').nativeImage;
+   let documentIcon = nativeimage.createFromPath(iconPath);
+   console.log(documentIcon.toPNG());
+
 
 
    dialog.showMessageBox(myWindow,{
