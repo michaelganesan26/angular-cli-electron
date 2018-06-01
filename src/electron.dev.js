@@ -7,6 +7,11 @@ const fs = require('fs');
 
 const { getFiles } = require("./lib/directoryAccess");
 
+
+const { requireTaskPool } = require("electron-remote"); //this is required to start a remote process
+const work = requireTaskPool(require.resolve("./lib/cryptoLib"));
+
+
 const colors = require("colors");
 
 
@@ -175,80 +180,89 @@ ipcMain.on('show-context-menu', (event) => {
 });
 
 ipcMain.on("readFiles", (event, dirPath) => {
-  
-   console.log(typeof(dirPath));
-   console.log(`Your current path to read files is: ${dirPath.toString()}`);
 
-   getFiles.readDirectory(dirPath.toString()).then((files)=>{
-       files.forEach(file=>{
-         console.log(file);
-       });
-   
-      event.sender.send("selectedFiles",files);
+  console.log(typeof (dirPath));
+  console.log(`Your current path to read files is: ${dirPath.toString()}`);
+
+  getFiles.readDirectory(dirPath.toString()).then((files) => {
+    files.forEach(file => {
+      console.log(file);
+    });
+
+    event.sender.send("selectedFiles", files);
 
 
-   }).catch((error)=>{
-        console.log(`Error from Promise Code: ${error}`);
-   });
+  }).catch((error) => {
+    console.log(`Error from Promise Code: ${error}`);
+  });
 
 })
 
 //Open Message Box
-ipcMain.on("OpenMessageDialog",(event,data)=>{
+ipcMain.on("OpenMessageDialog", (event, data) => {
 
 
-   let myWindow = BrowserWindow.fromWebContents(event.sender);
+  let myWindow = BrowserWindow.fromWebContents(event.sender);
 
-   let iconPath = path.join(__dirname,"assets","icons","documentIcon.png");
+  let iconPath = path.join(__dirname, "assets", "icons", "documentIcon.png");
 
-   if(fs.existsSync(iconPath)){
-     console.log(`Icons Path: ${iconPath} does exists!`);
-   }
-   else{
-      console.log(`Sorry the icon path: ${iconPath} does not exist!`);
-   }
+  if (fs.existsSync(iconPath)) {
+    console.log(`Icons Path: ${iconPath} does exists!`);
+  }
+  else {
+    console.log(`Sorry the icon path: ${iconPath} does not exist!`);
+  }
 
-   //let documentIcon= nativeImage.createFromPath(iconPath);
-   let nativeimage = require('electron').nativeImage;
-   let documentIcon = nativeimage.createFromPath(iconPath);
-   console.log(documentIcon.toPNG());
-
-
-
-   dialog.showMessageBox(myWindow,{
-         type:"info",
-         icon: documentIcon,
-         title: "Sample Message Box",
-         defaultId: 0,
-         cancelId: 3,
-         checkboxLabel: "Michael Rocks",
-         message: "Welcome to my World of Data",
-         buttons:['Save','Cancel','Don\'t Save','Mexican']
-   },(response,checkboxChecked)=>{
-      
-     //find out what is the platform
-     console.log(`Your platform is: ${process.platform}`);
-
-   
-
-     if(checkboxChecked){
-         console.log(colors.magenta('You checked the checkbox for the dialog'));
-
-     }
+  //let documentIcon= nativeImage.createFromPath(iconPath);
+  let nativeimage = require('electron').nativeImage;
+  let documentIcon = nativeimage.createFromPath(iconPath);
+  console.log(documentIcon.toPNG());
 
 
-     if(response){
+
+  dialog.showMessageBox(myWindow, {
+    type: "info",
+    icon: documentIcon,
+    title: "Sample Message Box",
+    defaultId: 0,
+    cancelId: 3,
+    checkboxLabel: "Michael Rocks",
+    message: "Welcome to my World of Data",
+    buttons: ['Save', 'Cancel', 'Don\'t Save', 'Mexican']
+  }, (response, checkboxChecked) => {
+
+    //find out what is the platform
+    console.log(`Your platform is: ${process.platform}`);
+
+
+
+    if (checkboxChecked) {
+      console.log(colors.magenta('You checked the checkbox for the dialog'));
+
+    }
+
+
+    if (response) {
       console.log(colors.magenta(`Your clicked: ${response}`));
-     }
-     else{
-        console.log(colors.yellow('You clicked the save box!'))
-     }
+    }
+    else {
+      console.log(colors.yellow('You clicked the save box!'))
+    }
 
-   })
+  })
 
 });
 
+//start a remote process
+ipcMain.on("startRemoteProcess", (event, data) => {
+  console.log(colors.magenta(`Starting a remote process(work)`));
+  
+  work().then(result=>{
+       console.log('work is done!')
+       console.log(`Time taken to complete the process: ${result}`);
+  })
 
+});
 
 
 
