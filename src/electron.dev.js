@@ -248,6 +248,14 @@ ipcMain.on("OpenMessageDialog",(event,data)=>{
 
 });
 
+ipcMain.on("OpenErrorDialog",(event,data)=>{
+
+   console.log(`Your error is : ${data.error}`);
+
+    dialog.showErrorBox("Error Message",data.error);
+
+});
+
 
 
 

@@ -145,6 +145,16 @@ export class AppComponent implements AfterViewInit, OnChanges {
       }
 
 
+      openErrorDialog(event:MouseEvent){
+         this._electronService.ipcRenderer.send("OpenErrorDialog",{error:"Simple Error"});   
+
+
+
+
+
+      }
+
+
 
 
 
