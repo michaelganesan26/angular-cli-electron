@@ -1,12 +1,12 @@
-//This is a crypto file
+//This is the crypto libarry
 
-
-import * as crypto from 'crypto';
+var crypto = require("crypto");
 
 //this functions takes a few minutes
-function work(limit) {
+function work(limit = 1000) {
     let start = Date.now();
     let n = 0;
+    console.log(`Your value is: ${0}`,start);
 
     while (n < limit) {
 
@@ -20,6 +20,7 @@ function work(limit) {
 
             console.log(`${buffer} bytes of random data: ${buffer.toString('hex')}`);
         });
+        n++;
     }
 
     return {

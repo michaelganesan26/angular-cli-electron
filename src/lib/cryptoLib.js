@@ -1,5 +1,5 @@
 //This is a crypto file
-const { crypto } = require('crypto');
+import * as crypto from 'crypto';
 //this functions takes a few minutes
 function work(limit = 1000) {
     let start = Date.now();
