@@ -9,7 +9,11 @@ const { getFiles } = require("./lib/directoryAccess");
 
 
 const { requireTaskPool } = require("electron-remote"); //this is required to start a remote process
+<<<<<<< HEAD
 const work = requireTaskPool(require.resolve("./lib/pureCrypto"));
+=======
+const work = requireTaskPool(require.resolve("./lib/cryptoLib2"));
+>>>>>>> ec3330aa0ad70f70112914d8bd9944128ac161a6
 
 
 const colors = require("colors");
@@ -257,6 +261,7 @@ ipcMain.on("OpenMessageDialog", (event, data) => {
 ipcMain.on("startRemoteProcess", (event, data) => {
   console.log(colors.magenta(`Starting a remote process(work)`));
   
+<<<<<<< HEAD
   work(10000).then(result=>{
        console.log('work is done!')
        console.log(`Time taken to complete the process: ${result.timeElapsed}`);
@@ -265,6 +270,13 @@ ipcMain.on("startRemoteProcess", (event, data) => {
     console.log(`${JSON.stringify(err)}`);
   });
   
+=======
+  work(20).then(result=>{
+       console.log('work is done!')
+       console.log(`Time taken to complete the process: ${result.timeElapsed}`);
+  })
+
+>>>>>>> ec3330aa0ad70f70112914d8bd9944128ac161a6
 });
 
 
