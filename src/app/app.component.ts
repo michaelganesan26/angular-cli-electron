@@ -145,23 +145,12 @@ export class AppComponent implements AfterViewInit, OnChanges {
       }
 
 
-<<<<<<< HEAD
   //button start a remote process
   startRemoteProcess(event:MouseEvent){
 
      this._electronService.ipcRenderer.send("startRemoteProcess",{id:"work"});
 
   }
-=======
-      openErrorDialog(event:MouseEvent){
-         this._electronService.ipcRenderer.send("OpenErrorDialog",{error:"Simple Error"});   
-
-
-
-
-
-      }
->>>>>>> 8af691d06b71a4387d1c75c3fd19280039d0c7fa
 
 
 
